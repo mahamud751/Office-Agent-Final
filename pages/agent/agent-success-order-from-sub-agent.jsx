@@ -1,7 +1,12 @@
+import axios from "axios";
+import jwtDecode from "jwt-decode";
+import Link from "next/link";
 import React from "react";
 import useScript from "../../commonFunction/ReloadJs";
-const AgentSuccessOrderFromSubAgent = () => {
+const AgentSuccessOrderFromSubAgent = (props) => {
   useScript("/assets/js/app.js");
+  const getPendingAllProductOrder = props.data;
+  console.log(getPendingAllProductOrder);
   return (
     <div>
       <div className="row">
@@ -45,38 +50,31 @@ const AgentSuccessOrderFromSubAgent = () => {
                       <th>Total product</th>
                       <th>Total qty</th>
                       <th>Total amount</th>
-                      <th>Status</th>
                       <th>Invoice</th>
-                      <th>Delete</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>Amir hamza</td>
-                      <td>57684576</td>
-                      <td>test@gmail.com</td>
-                      <td>24/10/2021</td>
-                      <td>10</td>
-                      <td>30</td>
-                      <td>10000</td>
-                      <td>
-                        <label className="badge mb-0 badge-warning-inverse">Pending</label>
-                        <label className="badge mb-0 badge-primary-inverse">Process</label>
-                        <label className="badge mb-0 badge-success-inverse ">Success</label>
-                        <label className="badge badge-danger-inverse">Cancel</label>
-                      </td>
-                      <td>
-                        <a href="javascript:void(0);" className="btn btn-block btn-outline-info">
-                          Invoice
-                        </a>
-                      </td>
-                      <td>
-                        <a href="javascript:void(0);" className="btn btn-block btn-square btn-outline-danger">
-                          Delete
-                        </a>
-                      </td>
-                    </tr>
+                    {getPendingAllProductOrder.map((item, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{item.memberDetails[0].name}</td>
+                          <td>{item.memberDetails.number}</td>
+                          <td>{item.memberDetails.email}</td>
+                          <td>{item.date}</td>
+                          <td>{item.totalProduct}</td>
+                          <td>{item.totalQty}</td>
+                          <td>{item.totalPrice}</td>
+                          <Link href={`/agent/order-invoice/${item.invoiceNumber}`}>
+                            <td>
+                              <a href="javascript:void(0);" className="btn btn-block btn-outline-info">
+                                {item.invoiceNumber}
+                              </a>
+                            </td>
+                          </Link>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -87,5 +85,22 @@ const AgentSuccessOrderFromSubAgent = () => {
     </div>
   );
 };
+
+export async function getServerSideProps({ req }) {
+  const token = req.cookies.token;
+  const decodedToken = jwtDecode(token);
+
+  const { data } = await axios.get(process.env.API_URL + "/agentPanel/av1/userOrderSuccessToSubAgent/" + decodedToken.userId);
+
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: { data },
+  };
+}
 
 export default AgentSuccessOrderFromSubAgent;

@@ -19,6 +19,11 @@ const NavBar = () => {
                     <a>Dashboards</a>
                   </Link>
                 </li>
+                <li>
+                  <Link href="/agent/profile">
+                    <a>Profile</a>
+                  </Link>
+                </li>
               </ul>
             </li>
             <li>
@@ -29,7 +34,7 @@ const NavBar = () => {
               </a>
               <ul aria-expanded="false">
                 <li>
-                  <Link href="/agent//products">
+                  <Link href="/agent/products">
                     <a>Products</a>
                   </Link>
                 </li>
@@ -43,16 +48,6 @@ const NavBar = () => {
                 <span className="nav-label label label-danger">3</span>
               </a>
               <ul aria-expanded="false">
-                <li>
-                  <Link href="/agent/create-agent-and-subagent">
-                    <a>Create agent & sub agent</a>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/agent/list-of-agent">
-                    <a>List of agent</a>
-                  </Link>
-                </li>
                 <li>
                   <Link href="/agent/list-of-sub-agent">
                     <a>List of sub agent</a>
@@ -68,11 +63,6 @@ const NavBar = () => {
                 <span className="nav-label label label-danger">2</span>
               </a>
               <ul aria-expanded="false">
-                <li>
-                  <Link href="/agent/list-of-agent-request">
-                    <a>List of agent request </a>
-                  </Link>
-                </li>
                 <li>
                   <Link href="/agent/list-of-sub-agent-request">
                     <a>List of sub agent request </a>
@@ -113,11 +103,7 @@ const NavBar = () => {
                     <a>Purchase product</a>
                   </Link>
                 </li>
-                <li>
-                  <Link href="/agent/agent-purchase-package">
-                    <a>Purchase package</a>
-                  </Link>
-                </li>
+
                 <li>
                   <Link href="/agent/agent-order-pending">
                     <a>Pending order</a>
@@ -148,11 +134,7 @@ const NavBar = () => {
                     <a>Return product</a>
                   </Link>
                 </li>
-                <li>
-                  <Link href="/agent/agent-return-package">
-                    <a>Return package</a>
-                  </Link>
-                </li>
+
                 <li>
                   <Link href="/agent/agent-return-pending-order">
                     <a> Pending order</a>

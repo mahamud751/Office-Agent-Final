@@ -1,40 +1,22 @@
 import axios from "axios";
+import jwtDecode from "jwt-decode";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
+import React from "react";
 import useScript from "../../commonFunction/ReloadJs";
 
 const ListOfSubAgent = (props) => {
   useScript("/assets/js/app.js");
 
-  const MySwal = withReactContent(Swal);
-  const getSubAgentList = props.data;
-  // console.log(getProductList);
-  const [subAgent, updateAgentInfo] = useState(getSubAgentList);
+  const getPendingAllProductOrder = props.data;
+  console.log(getPendingAllProductOrder);
 
-  useEffect(() => {
-    updateAgentInfo(getSubAgentList);
-  }, [getSubAgentList]);
-  const deleteItem = async (id) => {
-    const formData = { tableName: "product", idColumnName: "id", idValue: id };
-    const response = await axios
-      .post(process.env.API_URL + "/Delete", formData)
-      .then((item) => {
-        MySwal.fire("Good job!", "Delete information successfully", "success");
-        deleteInformation(id, subAgent, getSubAgentList, updateAgentInfo);
-      })
-      .catch((error) => {
-        MySwal.fire("Brand not saved!", "Something Error Found.", "warning");
-      });
-  };
   return (
     <div>
       <div className="row">
         <div className="col-md-12 m-b-30">
           <div className="d-block d-sm-flex flex-nowrap align-items-center">
             <div className="page-title mb-2 mb-sm-0">
-              <h1>List of sub agent</h1>
+              <h1>List of Sub agent sales</h1>
             </div>
             <div className="ml-auto d-flex align-items-center">
               <nav>
@@ -46,7 +28,7 @@ const ListOfSubAgent = (props) => {
                   </li>
                   <li className="breadcrumb-item">Tables</li>
                   <li className="breadcrumb-item active text-primary" aria-current="page">
-                    List of sub agent
+                    List of agent sales
                   </li>
                 </ol>
               </nav>
@@ -64,63 +46,38 @@ const ListOfSubAgent = (props) => {
                   <thead>
                     <tr>
                       <th>Serial</th>
-                      <th>Picture</th>
                       <th>Name</th>
                       <th>Number</th>
                       <th>Email</th>
-                      <th>Details</th>
-                      <th>Join date</th>
-                      <th>Active/Inactive</th>
-                      <th>Edit</th>
-                      <th>Delete</th>
+                      <th>Date</th>
+                      <th>Total product</th>
+                      <th>Total qty</th>
+                      <th>Total amount</th>
+                      <th>Invoice</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {agent.map((item, index) => (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>
-                          <img src={process.env.API_URL + "/upload/" + JSON.parse(item.img)} width={150} height={150} />
-                        </td>
-                        <td>Picture</td>
-                        <td>Amir hamza</td>
-                        <td>57684576</td>
-                        <td>test@gmail.com</td>
-                        <td>
-                          <a href="javascript:void(0);" className="btn btn-block btn-outline-info">
-                            Agent details
-                          </a>
-                        </td>
-                        <td>24/10/2021</td>
-                        <td>
-                          <div className="form-check mb-0 py-2">
-                            <input className="form-check-input" type="radio" name="toasts" id="success" defaultValue="success" defaultChecked />
-                            <label className="form-check-label" htmlFor="success">
-                              Active
-                            </label>
-                          </div>
-
-                          <div className="form-check mb-0 py-2">
-                            <input className="form-check-input" type="radio" name="toasts" id="info" defaultValue="info" />
-                            <label className="form-check-label" htmlFor="info">
-                              Inactive
-                            </label>
-                          </div>
-                        </td>
-                        <td>
-                          <Link href="/ecommerce/edit/product/[productId]" as={`/ecommerce/edit/product/`}>
-                            <a className="btn btn-sm btn-outline-info">
-                              <i className="fa fa-edit"></i>
-                            </a>
+                    {getPendingAllProductOrder.map((item, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{item.memberDetails[0].name}</td>
+                          <td>{item.memberDetails.number}</td>
+                          <td>{item.memberDetails.email}</td>
+                          <td>{item.date}</td>
+                          <td>{item.totalProduct}</td>
+                          <td>{item.totalQty}</td>
+                          <td>{item.totalPrice}</td>
+                          <Link href={`/agent/order-invoice/${item.invoiceNumber}`}>
+                            <td>
+                              <a href="javascript:void(0);" className="btn btn-block btn-outline-info">
+                                {item.invoiceNumber}
+                              </a>
+                            </td>
                           </Link>
-                        </td>
-                        <td>
-                          <a href="javascript:void(0);" onClick={() => deleteItem(item.id)} className="btn btn-block btn-square btn-outline-danger">
-                            Delete
-                          </a>
-                        </td>
-                      </tr>
-                    ))}
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -132,8 +89,11 @@ const ListOfSubAgent = (props) => {
   );
 };
 
-export async function getServerSideProps(context) {
-  const { data } = await axios.get(process.env.API_URL + "/GetAllProduct");
+export async function getServerSideProps({ req }) {
+  const token = req.cookies.token;
+  const decodedToken = jwtDecode(token);
+
+  const { data } = await axios.get(process.env.API_URL + "/agentPanel/av1/ListOfSubAgentSales/" + decodedToken.userId);
 
   if (!data) {
     return {

@@ -1,29 +1,32 @@
 import axios from "axios";
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
+import { getCookie } from "cookies-next";
+import jwtDecode from "jwt-decode";
+import { useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { addToCartProductInfo, cartState } from "../../atom/addTocartAtom";
-import { listOfVendorAtom } from "../../atom/ListOfVendorAtom";
+// import { addToCartProductInfo, cartState } from "../../atom/addTocartAtom";
+import { productState } from "../../atom/FilterProducts";
 import { totalsState } from "../../commonFunction/addToCartTotalsState";
+import useScript from "../../commonFunction/ReloadJs";
+import Products from "../../component/products/products";
+import Sidebar from "../../component/Sidebar";
 
 function products(props) {
-  const carts = useRecoilValue(cartState);
-  const product = useRecoilValue(addToCartProductInfo);
-  const totals = useRecoilValue(totalsState);
-
+  useScript("/assets/js/app.js");
+  const productMain = props.recentItem;
+  // console.log(productMain);
   const [cart, setCart] = useRecoilState(cartState);
   const [productCartInfo, updateProductCartInfo] = useRecoilState(addToCartProductInfo);
 
   const cartUpdate = async (item) => {
-    setCart({ ...carts, [item.id]: (carts[item.id] || 0) + 1 });
+    setCart({ ...cart, [item.id]: (cart[item.id] || 0) + 1 });
     const dsfsd = JSON.parse(item.img);
     const img = dsfsd[0];
     updateProductCartInfo({ ...productCartInfo, [item.id]: [item.id, item.name, item.buyPrice, img] });
   };
 
   const cartRemove = async (item) => {
-    const copy = { ...carts };
+    const copy = { ...cart };
     if (copy[item.id] === 1) {
       delete copy[item.id];
       setCart(copy);
@@ -31,20 +34,35 @@ function products(props) {
       setCart({ ...copy, [item.id]: copy[item.id] - 1 });
     }
   };
-  const vendorList = useRecoilValue(listOfVendorAtom);
 
-  // const { data: session, loading } = useSession();
+  const carts = useRecoilValue(cartState);
+  const product = useRecoilValue(addToCartProductInfo);
+  const totals = useRecoilValue(totalsState);
 
-  //   const [token, setToken] = useState("");
-  //   useEffect(() => {
-  //     const checkToken = checkCookies("token");
-  //     setToken(checkToken);
-  //     // const { pathname } = Router;
-  //     // if (pathname == "/") {
-  //     //   Router.push("/");
-  //     // }
-  //   }, []);
-  //   console.log(token);
+  const [pd, setPd] = useRecoilState(productState);
+
+  useEffect(() => {
+    setPd(productMain);
+  }, [setPd]);
+
+  const porductOrder = async () => {
+    const getCookies = getCookie("token");
+    let decodedToken = jwtDecode(getCookies);
+
+    //var newData = { ...userInformation, NewUser: NewUser, orderType: orderTypes };
+    const orderInformation = { cartInfo: cart, productInfo: productCartInfo, logInfo: decodedToken };
+    console.log(orderInformation);
+
+    const response = await axios
+      .post(process.env.API_URL + "/agentPanel/av1/agentProductOrder", orderInformation)
+      .then((response) => {
+        // MySwal.fire("Good job!", "Product added successfully", "success");
+      })
+      .catch((error) => {
+        // MySwal.fire("Product not saved!", "Something Error Found.", "warning");
+      });
+  };
+
   return (
     <div>
       <div>
@@ -56,8 +74,16 @@ function products(props) {
                   <div className="container-fluid p-0">
                     <div className="row no-gutters">
                       <div className="col-sm-6 col-lg-7 col-xxl-7  align-self-center order-2 order-sm-1 p-2" style={{ background: "#EAEBEF" }}>
-                        <input id="title" type="text" class="form-control" placeholder="Search/Product Item" />
+                        <div className="row no-gutters">
+                          <div className="col-sm-6 col-lg-8 col-xxl-8  align-self-center order-2 order-sm-1 p-2" style={{ background: "#EAEBEF" }}>
+                            <input id="title" type="text" className="form-control" placeholder="Search/Product Item" />
+                          </div>
+                          <div className="col-sm-6 col-lg-4 col-xxl-4  align-self-center order-2 order-sm-1 p-2" style={{ background: "#EAEBEF" }}>
+                            {/* <Pd /> */}
 
+                            <Sidebar />
+                          </div>
+                        </div>
                         <div className="row no-gutters">
                           <div className="container">
                             <h2 className="title title-underline mb-4 ls-normal appear-animate"></h2>
@@ -82,58 +108,7 @@ function products(props) {
         }
     }"
                             >
-                              <div className="swiper-wrapper row cols-xl-8 cols-lg-6 cols-md-4 cols-2">
-                                {props.recentItem.map((user, index) => (
-                                  <div key={index} className="swiper-slide product-wrap mb-0">
-                                    <div className="product text-center product-absolute">
-                                      <div className="shadow">
-                                        <figure className="brand">
-                                          <a>
-                                            {" "}
-                                            <Image src={"/" + JSON.parse(user.img)} alt="Product" width={280} height={280} />
-                                            {/* <img
-                                              src={"https://baybridgebd.com/upload/" + JSON.parse(user.img)}
-                                              alt="Product"
-                                              style={{ height: "160px", width: "160px", objectFit: "fill" }}
-                                            /> */}
-                                          </a>
-                                        </figure>
-                                        <h4 className="product-name">
-                                          <Link href={"/product-details/[productId]"} as={`/product-details/${user.id}`}>
-                                            <a>
-                                              {" "}
-                                              <a href="">{user.name}</a>
-                                            </a>
-                                          </Link>
-                                        </h4>
-                                      </div>
-                                      <div className="product-hidden-details">
-                                        <div className="product-action">
-                                          <a
-                                            href="#"
-                                            className="btn-product btn-cart btn btn-round btn-light"
-                                            title="Add to Cart"
-                                            onClick={() => cartUpdate(user)}
-                                          >
-                                            <i className="zmdi zmdi-shopping-cart" />
-                                            <span>Add To Cart</span>
-                                          </a>
-                                          {carts[user.id] && (
-                                            <button
-                                              className="btn btn-round btn-light"
-                                              onClick={() => {
-                                                cartRemove(user);
-                                              }}
-                                            >
-                                              Remove
-                                            </button>
-                                          )}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
+                              <Products />
                               <div className="swiper-pagination" />
                             </div>
                           </div>
@@ -165,7 +140,7 @@ function products(props) {
                                       </tr>
                                     </thead>
                                     <tbody>
-                                      {Object.entries(carts).map(([key, value]) => (
+                                      {Object.entries(cart).map(([key, value]) => (
                                         <tr key={key}>
                                           <td className="product-thumbnail">
                                             <div className="p-relative">
@@ -204,12 +179,6 @@ function products(props) {
                                       <i className="w-icon-long-arrow-left" />
                                       Continue Shopping
                                     </a>
-                                    {/* <button type="submit" className="btn btn-rounded btn-default btn-clear" name="clear_cart" value="Clear Cart">
-                    Clear Cart
-                  </button>
-                  <button type="submit" className="btn btn-rounded btn-update disabled" name="update_cart" value="Update Cart">
-                    Update Cart
-                  </button> */}
                                   </div>
                                 </div>
                                 <div className="col-lg-4 sticky-sidebar-wrapper">
@@ -257,99 +226,15 @@ function products(props) {
                                         <span className="ls-50">{totals.total.toFixed(2)}</span>
                                       </div>
 
-                                      <Link href="/checkout">
-                                        <a className="btn btn-block btn-dark btn-icon-right btn-rounded  btn-checkout">
-                                          Proceed to checkout
-                                          <i className="w-icon-long-arrow-right" />
-                                        </a>
-                                      </Link>
+                                      <a className="btn btn-block btn-dark btn-icon-right btn-rounded  btn-checkout" onClick={porductOrder}>
+                                        Proceed to checkout
+                                        <i className="w-icon-long-arrow-right" />
+                                      </a>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        </div>
-                        <div className="row gutter-lg mb-10">
-                          <div class="col-12 col-lg-12">
-                            <div class="card card-statistics">
-                              <div class="card-body">
-                                <div class="table-responsive">
-                                  <table class="table mb-0">
-                                    <thead class="thead-light">
-                                      <tr>
-                                        <th scope="col">TOTAL ITEM</th>
-                                        <th scope="col">2(4)</th>
-                                        <th scope="col">TOTAL</th>
-                                        <th scope="col">
-                                          {" "}
-                                          <span>{totals.subtotal.toFixed(2)}</span>
-                                        </th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      <tr>
-                                        <th scope="row">DISCOUNT</th>
-                                        <td>
-                                          <input className="btn btn-round btn-dark" type="number" value="0" style={{ width: "120px" }} />
-                                        </td>
-                                        <td>TAX AMOUNT(%)</td>
-                                        <td>
-                                          <input className="btn btn-round btn-dark" type="number" value="0" style={{ width: "120px" }} />
-                                        </td>
-                                      </tr>
-
-                                      <tr>
-                                        <th scope="row">SHIPPING CHARGE</th>
-                                        <td>
-                                          {" "}
-                                          <input className="btn btn-round btn-dark" type="number" value="0" style={{ width: "120px" }} />
-                                        </td>
-                                        <td>OTHER CHARGE</td>
-                                        <td>
-                                          {" "}
-                                          <input className="btn btn-round btn-dark" type="number" value="0" style={{ width: "120px" }} />
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                    <thead class="thead-light">
-                                      <tr>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                        <th scope="col">TOTAL PAYABLE</th>
-                                        <th scope="col">
-                                          {" "}
-                                          <span>{totals.subtotal.toFixed(2)}</span>
-                                        </th>
-                                      </tr>
-                                    </thead>
-                                  </table>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-lg-7 col-sm-6 text-center text-sm-left " style={{ background: "#F39C0F" }}>
-                        <div className="col-lg-6 col-sm-6 text-center text-sm-left ">
-                          <p className="text-white p-2 text-center">
-                            {" "}
-                            <span>{totals.subtotal.toFixed(2)}</span>
-                          </p>
-                        </div>
-                        <div className="col  col-sm-6 ml-sm-auto text-center text-sm-right">
-                          <p className="text-white">25/2/2022</p>
-                        </div>
-                      </div>
-                      <div className="col-lg-5 col-sm-6 text-center text-sm-left ">
-                        <div className="row">
-                          <div className="col-lg-6 col-sm-6 text-center" style={{ background: "green" }}>
-                            <p className="text-white text-center p-4">PLAY NOW</p>
-                          </div>
-                          <div className="col-lg-6 col-sm-6 text-center text-sm-left " style={{ background: "red" }}>
-                            <p className="text-white  text-center p-4">HOLD</p>
                           </div>
                         </div>
                       </div>

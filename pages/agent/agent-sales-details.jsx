@@ -1,7 +1,21 @@
+import axios from "axios";
+import jwtDecode from "jwt-decode";
+import Link from "next/link";
 import React from "react";
 import useScript from "../../commonFunction/ReloadJs";
-const ListOfAgentSales = () => {
+const ListOfAgentSales = (props) => {
   useScript("/assets/js/app.js");
+
+  const getPendingAllProductOrder = props.data;
+  console.log(getPendingAllProductOrder);
+  // console.log(getPendingAllProductOrder);
+  // const [ProductStockQty, updatePendingAllProductOrder] = useRecoilState(storeTotalPendingListOfProduct);
+
+  // useEffect(() => {
+  //   updatePendingAllProductOrder(getPendingAllProductOrder);
+  // }, [updatePendingAllProductOrder]);
+
+  // const pendingAllProductOrders = useRecoilValue(storeTotalPendingListOfProduct);
   return (
     <div>
       <div className="row">
@@ -49,21 +63,27 @@ const ListOfAgentSales = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>Amir hamza</td>
-                      <td>57684576</td>
-                      <td>test@gmail.com</td>
-                      <td>24/10/2021</td>
-                      <td>10</td>
-                      <td>30</td>
-                      <td>10000</td>
-                      <td>
-                        <a href="javascript:void(0);" className="btn btn-block btn-outline-info">
-                          Invoice
-                        </a>
-                      </td>
-                    </tr>
+                    {getPendingAllProductOrder.map((item, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          {/* <td>{item.memberDetails[0].name}</td>
+                          <td>{item.memberDetails.number}</td>
+                          <td>{item.memberDetails.email}</td> */}
+                          <td>{item.date}</td>
+                          <td>{item.totalProduct}</td>
+                          <td>{item.totalQty}</td>
+                          <td>{item.totalPrice}</td>
+                          <Link href={`/agent/order-invoice/${item.invoiceNumber}`}>
+                            <td>
+                              <a href="javascript:void(0);" className="btn btn-block btn-outline-info">
+                                {item.invoiceNumber}
+                              </a>
+                            </td>
+                          </Link>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -74,5 +94,20 @@ const ListOfAgentSales = () => {
     </div>
   );
 };
+
+export async function getServerSideProps({ req }) {
+  const token = req.cookies.token;
+  const decodedToken = jwtDecode(token);
+  const { data } = await axios.get(process.env.API_URL + "/agentPanel/av1/ListOfAgentSales/" + decodedToken.userId);
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: { data },
+  };
+}
 
 export default ListOfAgentSales;
