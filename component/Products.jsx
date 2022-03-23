@@ -1,6 +1,6 @@
 import React from "react";
 import { useRecoilValue } from "recoil";
-import { filteredProducts } from "../../atom/FilterProducts";
+import { filteredProducts } from "../atom/FilterProducts";
 import ProductItem from "./ProductItem";
 
 const Products = () => {

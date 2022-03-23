@@ -1,6 +1,7 @@
 import React from "react";
 import { useRecoilState } from "recoil";
-import { addToCartProductInfo, cartState } from "../../atom/addTocartAtom";
+import { addToCartProductInfo, cartState } from "../atom/addTocartAtom";
+// import { addToCartProductInfo, cartState } from "../../atom/addTocartAtom";
 
 const ProductItem = (props) => {
   const { product } = props;

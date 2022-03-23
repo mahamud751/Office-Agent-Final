@@ -6,10 +6,10 @@ import { addToCartProductInfo, cartState } from "../../atom/addTocartAtom";
 import { productState } from "../../atom/FilterProducts";
 import { totalsState } from "../../commonFunction/addToCartTotalsState";
 import useScript from "../../commonFunction/ReloadJs";
-import Products from "../../component/Products/Products";
+import Products from "../../component/Products";
 import Sidebar from "../../component/Sidebar";
 
-function Product(props) {
+const Product = (props) => {
   useScript("/assets/js/app.js");
   const productMain = props.recentItem;
 
@@ -250,7 +250,7 @@ function Product(props) {
       </div>
     </div>
   );
-}
+};
 
 export async function getServerSideProps(context) {
   const { data: recentItem } = await axios.get(process.env.API_URL + "/api/ev1/RecentProduct");
