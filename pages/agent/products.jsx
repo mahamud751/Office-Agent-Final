@@ -6,7 +6,7 @@ import { addToCartProductInfo, cartState } from "../../atom/addTocartAtom";
 import { productState } from "../../atom/FilterProducts";
 import { totalsState } from "../../commonFunction/addToCartTotalsState";
 import useScript from "../../commonFunction/ReloadJs";
-import Products from "../../component/products/products";
+import Products from "../../component/Products/Products";
 import Sidebar from "../../component/Sidebar";
 
 function Product(props) {
