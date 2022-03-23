@@ -1,7 +1,12 @@
+import axios from "axios";
+import jwtDecode from "jwt-decode";
+import Link from "next/link";
 import React from "react";
 import useScript from "../../commonFunction/ReloadJs";
-const ListOfSubAgentSales = () => {
+const ListOfSubAgentSales = (props) => {
   useScript("/assets/js/app.js");
+  const getPendingAllProductOrder = props.data;
+  console.log(getPendingAllProductOrder);
   return (
     <div>
       <div className="row">
@@ -49,21 +54,27 @@ const ListOfSubAgentSales = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>Amir hamza</td>
-                      <td>57684576</td>
-                      <td>test@gmail.com</td>
-                      <td>24/10/2021</td>
-                      <td>10</td>
-                      <td>30</td>
-                      <td>10000</td>
-                      <td>
-                        <a href="javascript:void(0);" className="btn btn-block btn-outline-info">
-                          Invoice
-                        </a>
-                      </td>
-                    </tr>
+                    {getPendingAllProductOrder.map((item, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{item.agents[0].name}</td>
+                          <td>{item.agents[0].number}</td>
+                          <td>{item.agents[0].email}</td>
+                          <td>{item.date}</td>
+                          <td>{item.totalProduct}</td>
+                          <td>{item.totalQty}</td>
+                          <td>{item.totalPrice}</td>
+                          <Link href={`/agent/order-invoice/${item.invoiceNumber}`}>
+                            <td>
+                              <a href="javascript:void(0);" className="btn btn-block btn-outline-info">
+                                {item.invoiceNumber}
+                              </a>
+                            </td>
+                          </Link>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -75,4 +86,21 @@ const ListOfSubAgentSales = () => {
   );
 };
 
+export async function getServerSideProps({ req }) {
+  const token = req.cookies.token;
+  const decodedToken = jwtDecode(token);
+  console.log(decodedToken);
+  // const { data } = await axios.get(process.env.API_URL + "/agentPanel/av1/ListOfSubAgentSales/" + decodedToken.userId);
+  const { data } = await axios.get(process.env.API_URL + "/agentPanel/av1/ListOfAgentSales/" + decodedToken.userId);
+  // console.log(data);
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: { data },
+  };
+}
 export default ListOfSubAgentSales;

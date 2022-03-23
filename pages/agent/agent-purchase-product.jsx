@@ -59,9 +59,9 @@ const AgentPurchaseProduct = (props) => {
                       return (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          {/* <td>{item.memberDetails[0].name}</td>
-                          <td>{item.memberDetails[0].number}</td>
-                          <td>{item.memberDetails[0].email}</td> */}
+                          <td>{item.agents[0].name}</td>
+                          <td>{item.agents[0].number}</td>
+                          <td>{item.agents[0].email}</td>
                           <td>{item.date}</td>
                           <td>{item.totalProduct}</td>
                           <td>{item.totalQty}</td>

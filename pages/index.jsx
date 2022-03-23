@@ -1,5 +1,4 @@
 import axios from "axios";
-import { setCookies } from "cookies-next";
 import React, { useState } from "react";
 import fromValueUpdate from "../commonFunction/onChangeHandle";
 function Index() {
@@ -11,21 +10,21 @@ function Index() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    console.log(process.env.API_URL + "/agentPanel/v1/AgentLogin");
-    const response = await axios
-      .post(process.env.API_URL + "/agentPanel/v1/AgentLogin", login)
-      .then((response) => {
-        console.log(response.data);
-        setCookies("token", response.data);
-        const url = "http://localhost:3000/Home";
-        window.location.href = url;
+    // console.log(process.env.API_URL + "/agentPanel/av1/AgentLogin");
+    const response = await axios;
+    // .post(process.env.API_URL + "/agentPanel/av1/AgentLogin", login)
+    // .then((response) => {
+    //   console.log(response.data);
+    //   setCookies("token", response.data);
+    const url = "http://localhost:3002/Home";
+    window.location.href = url;
 
-        // localStorage.setItem("token", response.data);
-        // window.location.href = "http://localhost:3001/Home";
-      })
-      .catch((error) => {
-        console.log("do not login");
-      });
+    // localStorage.setItem("token", response.data);
+    // window.location.href = "http://localhost:3001/Home";
+    // })
+    // .catch((error) => {
+    //   console.log("do not login");
+    // });
   };
   return (
     <div>

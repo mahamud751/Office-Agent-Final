@@ -1,20 +1,18 @@
 import axios from "axios";
 import { getCookie } from "cookies-next";
 import jwtDecode from "jwt-decode";
-import { useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { addToCartProductInfo, cartState } from "../../atom/addTocartAtom";
-// import { addToCartProductInfo, cartState } from "../../atom/addTocartAtom";
 import { productState } from "../../atom/FilterProducts";
 import { totalsState } from "../../commonFunction/addToCartTotalsState";
 import useScript from "../../commonFunction/ReloadJs";
 import Products from "../../component/products/products";
 import Sidebar from "../../component/Sidebar";
 
-function products(props) {
+function Product(props) {
   useScript("/assets/js/app.js");
   const productMain = props.recentItem;
-  // console.log(productMain);
+
   const [cart, setCart] = useRecoilState(cartState);
   const [productCartInfo, updateProductCartInfo] = useRecoilState(addToCartProductInfo);
 
@@ -262,4 +260,4 @@ export async function getServerSideProps(context) {
   };
 }
 
-export default products;
+export default Product;
