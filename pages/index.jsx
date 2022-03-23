@@ -16,7 +16,7 @@ function Index() {
     // .then((response) => {
     //   console.log(response.data);
     //   setCookies("token", response.data);
-    const url = "http://localhost:3002/Home";
+    const url = "https://office-agent-final.vercel.app/Home";
     window.location.href = url;
 
     // localStorage.setItem("token", response.data);
