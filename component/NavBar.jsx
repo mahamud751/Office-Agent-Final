@@ -34,7 +34,7 @@ const NavBar = () => {
               </a>
               <ul aria-expanded="false">
                 <li>
-                  <Link href="/agent/products">
+                  <Link href="/agent/product">
                     <a>Products</a>
                   </Link>
                 </li>
