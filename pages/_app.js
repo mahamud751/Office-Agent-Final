@@ -17,7 +17,8 @@ export default function MyApp({ Component, pageProps }) {
       if (asPath != "/") {
         if (decodedToken.exp * 1000 < currentDate.getTime()) {
           console.log("Token expired.");
-          window.location.href = "https://office-agent-final.vercel.app/";
+          window.location.href = "https://office-agent-final.vercel.app";
+          // window.location.href = "http://localhost:3002/";
         }
       }
     }

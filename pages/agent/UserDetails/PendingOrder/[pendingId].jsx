@@ -1,9 +1,9 @@
 import axios from "axios";
-import jwtDecode from "jwt-decode";
 import Link from "next/link";
 import React from "react";
-import useScript from "../../commonFunction/ReloadJs";
-const ListOfSubAgentSales = (props) => {
+import useScript from "../../../../commonFunction/ReloadJs";
+
+const AgentDailyOrderFromUser = (props) => {
   useScript("/assets/js/app.js");
   const getPendingAllProductOrder = props.data;
   console.log(getPendingAllProductOrder);
@@ -13,7 +13,7 @@ const ListOfSubAgentSales = (props) => {
         <div className="col-md-12 m-b-30">
           <div className="d-block d-sm-flex flex-nowrap align-items-center">
             <div className="page-title mb-2 mb-sm-0">
-              <h1>List of sub agent sales</h1>
+              <h1>List of daily order from user</h1>
             </div>
             <div className="ml-auto d-flex align-items-center">
               <nav>
@@ -25,7 +25,7 @@ const ListOfSubAgentSales = (props) => {
                   </li>
                   <li className="breadcrumb-item">Tables</li>
                   <li className="breadcrumb-item active text-primary" aria-current="page">
-                    List of sub agent sales
+                    List of daily order from user
                   </li>
                 </ol>
               </nav>
@@ -58,14 +58,14 @@ const ListOfSubAgentSales = (props) => {
                       return (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{item.agents[0].name}</td>
-                          <td>{item.agents[0].number}</td>
-                          <td>{item.agents[0].email}</td>
+                          <td>{item.memberDetails[0].name}</td>
+                          <td>{item.memberDetails.number}</td>
+                          <td>{item.memberDetails.email}</td>
                           <td>{item.date}</td>
                           <td>{item.totalProduct}</td>
                           <td>{item.totalQty}</td>
                           <td>{item.totalPrice}</td>
-                          <Link href={`/agent/userInvoice/${item.invoiceNumber}`}>
+                          <Link href={`/agent/order-invoice/${item.invoiceNumber}`}>
                             <td>
                               <a href="javascript:void(0);" className="btn btn-block btn-outline-info">
                                 {item.invoiceNumber}
@@ -86,13 +86,9 @@ const ListOfSubAgentSales = (props) => {
   );
 };
 
-export async function getServerSideProps({ req }) {
-  const token = req.cookies.token;
-  const decodedToken = jwtDecode(token);
-  console.log(decodedToken);
-  // const { data } = await axios.get(process.env.API_URL + "/agentPanel/av1/ListOfSubAgentSales/" + decodedToken.userId);
-  const { data } = await axios.get(process.env.API_URL + "/agentPanel/av1/ListOfAgentSales/" + decodedToken.userId);
-  // console.log(data);
+export async function getServerSideProps(context) {
+  const id = context.params.dailyOrderId;
+  const { data } = await axios.get(process.env.API_URL + "/agentPanel/av1/userOrderPendingToAgent/" + id);
   if (!data) {
     return {
       notFound: true,
@@ -103,4 +99,5 @@ export async function getServerSideProps({ req }) {
     props: { data },
   };
 }
-export default ListOfSubAgentSales;
+
+export default AgentDailyOrderFromUser;

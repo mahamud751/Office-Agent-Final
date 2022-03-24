@@ -74,7 +74,7 @@ const ListOfAgentSales = (props) => {
                           <td>{item.totalProduct}</td>
                           <td>{item.totalQty}</td>
                           <td>{item.totalPrice}</td>
-                          <Link href={`/agent/order-invoice/${item.invoiceNumber}`}>
+                          <Link href={`/agent/userInvoice/${item.invoiceNumber}`}>
                             <td>
                               <a href="javascript:void(0);" className="btn btn-block btn-outline-info">
                                 {item.invoiceNumber}

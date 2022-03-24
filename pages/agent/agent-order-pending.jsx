@@ -51,7 +51,7 @@ const AgentOrderPending = (props) => {
                       <th>Total product</th>
                       <th>Total qty</th>
                       <th>Total amount</th>
-                      <th>Status</th>
+
                       <th>Invoice</th>
                     </tr>
                   </thead>
