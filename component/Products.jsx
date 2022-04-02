@@ -5,6 +5,7 @@ import ProductItem from "./ProductItem";
 
 const Products = () => {
   const products = useRecoilValue(filteredProducts);
+  console.log(products);
 
   return (
     <>

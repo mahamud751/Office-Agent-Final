@@ -91,7 +91,7 @@ export async function getServerSideProps({ req }) {
   const decodedToken = jwtDecode(token);
   console.log(decodedToken);
   // const { data } = await axios.get(process.env.API_URL + "/agentPanel/av1/ListOfSubAgentSales/" + decodedToken.userId);
-  const { data } = await axios.get(process.env.API_URL + "/agentPanel/av1/ListOfAgentSales/" + decodedToken.userId);
+  const { data } = await axios.get(process.env.API_URL + "/agentPanel/av1/listOfSubAgentSales/" + decodedToken.userId);
   // console.log(data);
   if (!data) {
     return {

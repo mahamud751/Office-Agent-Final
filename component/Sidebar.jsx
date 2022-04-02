@@ -6,6 +6,7 @@ const Sidebar = () => {
   const [filter, setFilter] = useRecoilState(productFilteredState);
   const products = useRecoilValue(filteredProducts);
 
+  const obj = [...new Map(products.map((item) => [JSON.stringify(item.name), item])).values()];
   return (
     <>
       <div className="columns is-multiline">
@@ -14,7 +15,7 @@ const Sidebar = () => {
             <option value="" className="widget-body filter-items item-check mt-1 h6">
               show all
             </option>
-            {products.map((product) => (
+            {obj.map((product) => (
               <option value={product.name}>{product.name}</option>
             ))}
           </select>

@@ -15,7 +15,7 @@ const NavBar = () => {
               </a>
               <ul aria-expanded="false">
                 <li>
-                  <Link href="/">
+                  <Link href="/Home">
                     <a>Dashboards</a>
                   </Link>
                 </li>

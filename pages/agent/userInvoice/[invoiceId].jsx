@@ -123,21 +123,21 @@ const invoiceItem = (props) => {
                                 </th>
                                 {AllProductInfo1.map((pd, index) => {
                                   return (
-                                    <tr key={index}>
-                                      <th className="per70 text-center">{pd.totalPrice}</th>
-                                    </tr>
+                                    <th key={index} className="text-center">
+                                      {pd.totalPrice}
+                                    </th>
                                   );
                                 })}
                               </tr>
                               <tr>
-                                <th colSpan={2} className="text-right">
+                                <th colSpan={2} className="text-center">
                                   20% VAT:
                                 </th>
                                 {AllProductInfo1.map((pd, index) => {
                                   return (
-                                    <tr key={index}>
-                                      <th className="text-center">$47.40 USD</th>
-                                    </tr>
+                                    <th key={index} className="text-center">
+                                      $47.40 USD
+                                    </th>
                                   );
                                 })}
                               </tr>
@@ -154,9 +154,9 @@ const invoiceItem = (props) => {
                                 </th>
                                 {AllProductInfo1.map((pd, index) => {
                                   return (
-                                    <tr key={index}>
-                                      <th className="text-center">{pd.totalPrice}</th>
-                                    </tr>
+                                    <th key={index} className="text-center">
+                                      {pd.totalPrice}
+                                    </th>
                                   );
                                 })}
                               </tr>

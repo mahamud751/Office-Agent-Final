@@ -31,11 +31,11 @@ const ProductItem = (props) => {
         <div class="card-deck m-b-30">
           <div class="card">
             <figure className="brand">
-              <a>
-                {" "}
-                {/* <Image src={"/" + JSON.parse(product.img)} alt="Product" width={280} height={280} /> */}
-                <img src={product.img} alt="Product" style={{ height: "160px", width: "160px", objectFit: "fill" }} />
-              </a>
+              <img
+                src={process.env.API_URL + "/upload/" + JSON.parse(product.img)}
+                alt="Product"
+                style={{ height: "200px", width: "100%", objectFit: "contain" }}
+              />
             </figure>
             <div class="card-body">
               <h4 class="card-title">
